@@ -1,0 +1,13 @@
+- name: 'Move scripts to servers'
+  hosts: groupname or hostname
+  become: yes
+  vars:
+    src: path/from
+    dest: path/to
+  tasks:
+    - name: 'Move'
+      copy: src={{ src }} dest={{ dest }}
+    - name: 'chmod o+x image_names'
+      shell: sudo chmod o+x /path/to/image_names.py
+    - name: 'chmod o+x is_docker_container_available'
+      shell: sudo chmod o+x /path/to/is_docker_container_available.py 

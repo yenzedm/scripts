@@ -1,0 +1,6 @@
+- name: 'restart zabbix_agent2 service'
+  hosts: groupname or hostname
+  become: yes
+  tasks:
+    - name: 'restart with systemctl'
+      shell: systemctl restart zabbix-agent2.service

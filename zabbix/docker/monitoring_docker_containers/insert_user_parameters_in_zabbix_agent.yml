@@ -1,0 +1,8 @@
+- name: 'Insert user parameters in zabbix_agent2.conf'
+  hosts: groupname or hostname
+  become: yes 
+  tasks: 
+    - name: 'Add user parameter docker.image_names in zabbix_agent'
+      shell: echo 'UserParameter=docker.image_names,/path/to/image_names.py' >> /etc/zabbix/zabbix_agent2.conf 
+    - name: 'Add user parameter docker.container.image_name in zabbix_agent'
+      shell: echo 'UserParameter=docker.container.image_name[*],/path/to/is_docker_container_available.py $1' >> /etc/zabbix/zabbix_agent2.conf
