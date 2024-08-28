@@ -1,6 +1,6 @@
 all:
   children:
-    host1:
+    astra-1.7:
       hosts:
         test_ubuntu:
           ansible_host: ip
@@ -9,7 +9,7 @@ all:
           ansible_become: yes
           ansible_become_method: sudo
           ansible_become_pass: pass for sudo
-    host2:
+    ubuntu-20.04:
       hosts:
         test1:
           ansible_host: ip
@@ -18,4 +18,21 @@ all:
           ansible_become: yes
           ansible_become_method: sudo
           ansible_become_pass: pass for sudo
-
+    ubuntu-22.04:
+      hosts:
+        test1:
+          ansible_host: ip
+          ansible_user: username
+          ansible_ssh_private_key_file: path/to/key
+          ansible_become: yes
+          ansible_become_method: sudo
+          ansible_become_pass: pass for sudo
+    ubuntu-24.04:
+      hosts:
+        test1:
+          ansible_host: ip
+          ansible_user: username
+          ansible_ssh_private_key_file: path/to/key
+          ansible_become: yes
+          ansible_become_method: sudo
+          ansible_become_pass: pass for sudo

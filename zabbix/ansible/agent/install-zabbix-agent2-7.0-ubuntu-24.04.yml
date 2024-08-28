@@ -1,0 +1,66 @@
+---
+- name: Install Zabbix Agent 2 on Ubuntu 24.04 
+  hosts: ubuntu-24.04
+  become: yes  # Ensures the tasks are executed with sudo/root privileges
+  vars_files:
+    - vars/agent_vars.yml
+ 
+  tasks:
+    - name: Check if Zabbix Agent 2 is already installed
+      shell: dpkg -l | grep zabbix-agent2
+      register: zabbix_agent2_installed
+      ignore_errors: yes
+
+    - name: Debug the Zabbix Agent 2 installation status
+      debug:
+        msg: "Zabbix Agent 2 is already installed!"
+      when: zabbix_agent2_installed.rc == 0
+
+    - name: Ensure apt cache is up-to-date
+      apt:
+        update_cache: yes
+      when: zabbix_agent2_installed.rc != 0
+
+    - name: Download Zabbix repository package
+      get_url:
+        url: "{{ repo_url_ubuntu_24_04 }}"
+        dest: /tmp/zabbix-release.deb
+      when: zabbix_agent2_installed.rc != 0
+
+    - name: Install Zabbix repository package
+      command: dpkg -i /tmp/zabbix-release.deb
+      when: zabbix_agent2_installed.rc != 0
+
+    - name: Update apt cache after adding Zabbix repository
+      apt:
+        update_cache: yes
+      when: zabbix_agent2_installed.rc != 0
+
+    - name: Install Zabbix Agent 2
+      apt:
+        name: zabbix-agent2
+        state: present
+      when: zabbix_agent2_installed.rc != 0
+
+    - name: Add zabbix server to zabbix_agent2.conf for passive
+      shell: sed -i "s/^Server=.*/Server={{ zabbix_server }}/" /etc/zabbix/zabbix_agent2.conf
+      when: zabbix_agent2_installed.rc != 0
+
+    - name: Add zabbix server to zabbix_agent2.conf for active
+      shell: sed -i "s/^ServerActive=.*/ServerActive={{ zabbix_server }}/" /etc/zabbix/zabbix_agent2.conf
+      when: zabbix_agent2_installed.rc != 0
+
+    - name: Add hostname to zabbix_agent2.conf
+      shell: sed -i "s/^Hostname=.*/Hostname=$(hostname)/" /etc/zabbix/zabbix_agent2.conf
+      when: zabbix_agent2_installed.rc != 0
+
+    - name: Add metadata to zabbix_agent2.conf
+      shell: sed -i "s/^# HostMetadata=.*/HostMetadata=Linux/" /etc/zabbix/zabbix_agent2.conf
+      when: zabbix_agent2_installed.rc != 0
+
+    - name: Ensure Zabbix Agent 2 is enabled and started
+      service:
+        name: zabbix-agent2
+        enabled: yes
+        state: restarted
+      when: zabbix_agent2_installed.rc != 0
