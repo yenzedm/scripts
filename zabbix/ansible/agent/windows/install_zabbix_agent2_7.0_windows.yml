@@ -1,0 +1,43 @@
+---
+- name: Install Zabbix Agent 2 on Windows hosts
+  hosts: win
+  gather_facts: no
+  vars_files:
+    - vars/agent_vars.yml
+  tasks:
+    - name: Check if Zabbix Agent 2 service is installed
+      ansible.windows.win_service_info:
+        name: "Zabbix Agent 2"
+      register: zabbix_service_info
+      ignore_errors: true
+
+    - name: Create tmp folder
+      win_file:
+        path: C:\tmp
+        state: directory
+      when: zabbix_service_info.exists == false
+
+    - name: Create logs folder
+      win_file:
+        path: C:\logs
+        state: directory
+      when: zabbix_service_info.exists == false
+
+    - name: Download Zabbix Agent 2 installer
+      win_get_url:
+        url: "{{ zabbix_url }}"
+        dest: C:\tmp\zabbix_agent2.msi
+      when: zabbix_service_info.exists == false
+
+    - name: Install Zabbix Agent 2
+      win_package:
+        path: C:\tmp\zabbix_agent2.msi
+        arguments: 'SERVER={{ zabbix_server }} SERVERACTIVE={{ zabbix_server }} HOSTNAME={{ inventory_hostname }} HOSTMETADATA=Win INSTALLFOLDER="C:\zabbix_agent2" CONFIGURE_FIREWALL=1 START=1 /log C:\logs\install_agent2.log'
+        state: present
+      when: zabbix_service_info.exists == false
+
+    - name: Remove Zabbix Agent 2 installer
+      win_file:
+        path: "{{ path_to_msi_installer }}"
+        state: absent
+      when: zabbix_service_info.exists == false 
