@@ -1,0 +1,21 @@
+---
+- name: Uninstall Zabbix agent
+  hosts: test
+  become: yes
+  tasks:
+    - name: Check if Zabbix Agent 2 is already installed
+      shell: dpkg -l | grep zabbix-agent2
+      register: zabbix_agent2_installed
+      ignore_errors: yes
+
+    - name: Debug the Zabbix Agent 2 installation status
+      debug:
+        msg: "Zabbix Agent 2 is not installed!"
+      when: zabbix_agent2_installed.rc != 0
+
+    - name: Remove Zabbix agent package
+      apt:
+        name: zabbix-agent2
+        purge: true
+        state: absent
+      when: zabbix_agent2_installed.rc == 0
