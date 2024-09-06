@@ -6,20 +6,10 @@
     - vars/agent_vars.yml
 
   tasks:
-    - name: Check if Zabbix Agent 2 service running
-      shell: systemctl | grep running | grep -i zabbix
-      register: zabbix_agent2_service_running
-      ignore_errors: yes
-
     - name: Check if Zabbix Agent 2 is already installed
-      shell: dpkg -l | grep zabbix-agent2
+      shell: dpkg -l | grep "zabbix-agent2 .*"
       register: zabbix_agent2_installed
       ignore_errors: yes
-
-    - name: Debug the Zabbix Agent 2 service status
-      debug:
-        msg: "Zabbix Agent 2 service is running"
-      when: zabbix_agent2_service_running == 0
 
     - name: Debug the Zabbix Agent 2 installation status
       debug:
@@ -73,4 +63,4 @@
         name: zabbix-agent2
         enabled: yes
         state: restarted
-      when: zabbix_agent2_installed.rc != 0 or zabbix_agent2_service_running.rc != 0
+      when: zabbix_agent2_installed.rc != 0
