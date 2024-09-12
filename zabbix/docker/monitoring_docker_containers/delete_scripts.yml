@@ -1,7 +1,0 @@
-- name: 'Delete scripts'
-  hosts: groupname or hostname
-  become: yes
-  tasks:
-    - name: 'Delete'
-      shell: rm -rf /path/to/scripts
-     

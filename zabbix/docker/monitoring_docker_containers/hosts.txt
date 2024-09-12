@@ -1,1 +1,0 @@
-test ansible_host=ip ansible_connections=ssh ansible_user=username ansible_ssh_pass=pass ansible_sudo_pass=pass
