@@ -2,24 +2,51 @@ from psycopg2 import OperationalError, connect
 from psycopg2.extensions import AsIs
 from os import name
 
+
 if name == 'posix':
     file_path = ''
     access_to_database = 'host all all all scram-sha-256\n'
- 
-    with open(file_path, 'a') as file:
-        file.writelines(access_to_database)
-        file.close()
+    
+    with open(file_path, 'r') as file:
+        text = file.read()
+    
+        if access_to_database not in text:
+            with open(file_path, 'a') as file:
+                file.writelines(access_to_database)
+                file.close()
+
 elif name == 'nt':
     # pg_hba.conf
-    file_path = ''
+    file_path = r'E:\\personal\\scripts\\postgresql\\pg_hba.conf'
     access_to_database = 'host all all all scram-sha-256\n'
+    
+    with open(file_path, 'r') as file:
+        text = file.read()
+
+        if access_to_database not in text:
+            with open(file_path, 'a') as file:
+                file.writelines(access_to_database)
+                file.close()
+
     # postgresql.conf
-    file_path = ''
-    listen_addresses = 'host all all all scram-sha-256\n'
-    pass
+    file_path = r'E:\\personal\\scripts\\postgresql\\postgresql.conf'
+    listen_addresses = "listen_addresses = '*'\n"
+
+    # Открытие файла для чтения
+    with open(file_path, 'r') as file:
+        lines = file.readlines()
+
+    # Замена строки, содержащей часть текста
+    for i, line in enumerate(lines):
+        if 'listen_addresses' in line:
+            lines[i] = listen_addresses
+
+    # Запись изменённых строк обратно в файл
+    with open(file_path, 'w') as file:
+        file.writelines(lines)
 
 # Параметры подключения к PostgreSQL
-host = "localhost"
+host = "10.0.0.30"
 port = "5432"
 user = "postgres"    # Пользователь с правами на создание других пользователей
 password = "postgres"
