@@ -1,37 +1,47 @@
-import psycopg2
-from psycopg2 import sql
+from psycopg2 import OperationalError, connect
+from psycopg2.extensions import AsIs
+from os import name
+
+if name == 'posix':
+    file_path = ''
+    access_to_database = 'host all all all scram-sha-256\n'
+ 
+    with open(file_path, 'a') as file:
+        file.writelines(access_to_database)
+        file.close()
+elif name == 'nt':
+    # pg_hba.conf
+    file_path = ''
+    access_to_database = 'host all all all scram-sha-256\n'
+    # postgresql.conf
+    file_path = ''
+    listen_addresses = 'host all all all scram-sha-256\n'
+    pass
 
 # Параметры подключения к PostgreSQL
-host = "10.0.0.30"
+host = "localhost"
 port = "5432"
-user = "postgres"    # Пользователь с правами на создание других пользователей/баз
+user = "postgres"    # Пользователь с правами на создание других пользователей
 password = "postgres"
 dbname = "postgres"
 
 # Новые данные для создания пользователя и базы данных
 new_db_user = "test"
+pass_for_new_user = "test"
 
-# Подключение к PostgreSQL
+
 try:
-    # Подключаемся к базе данных
-    conn = psycopg2.connect(host=host, dbname=dbname, user=user, password=password, port=port)
-    conn.autocommit = True  # Устанавливаем автокоммит для создания пользователя/базы
+# Подключаемся к базе данных
+    conn = connect(database=dbname, user=user, password=password, host=host, port=port)
+    conn.autocommit = True
     cursor = conn.cursor()
 
-#    # Создание нового пользователя
-#    create_user_query = sql.SQL("CREATE USER {} WITH PASSWORD %s").format(sql.Identifier(new_db_user))
-#    cursor.execute(create_user_query, [new_db_password])
-#    print(f"Пользователь '{new_db_user}' успешно создан.")
-#
-#    # Назначение прав новому пользователю на созданную базу данных
-#    grant_privileges_query = sql.SQL("GRANT ALL PRIVILEGES ON DATABASE {} TO {}").format(
-#        sql.Identifier(new_db_name), sql.Identifier(new_db_user)
-#    )
-#    cursor.execute(grant_privileges_query)
-#    print(f"Пользователю '{new_db_user}' даны права на базу данных '{new_db_name}'.")
+    # Создание нового пользователя
+    cursor.execute(f"CREATE USER %s WITH PASSWORD %s", (AsIs(new_db_user), pass_for_new_user))    
+    print(f"Пользователь '{new_db_user}' успешно создан.")
 
-except Exception as e:
-    print(f"Ошибка: {e}")
+except OperationalError as e:
+    print(f"Ошибка: '{e}'")
 finally:
     if conn:
         cursor.close()
