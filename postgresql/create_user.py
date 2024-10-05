@@ -1,22 +1,32 @@
 from psycopg2 import OperationalError, connect
 from psycopg2.extensions import AsIs
 from os import name
+import docker
+from time import sleep
 
 
 if name == 'posix':
-    file_path = ''
+    # Доступ к бд Linux
+    file_path = '/opt/recfaces/DATA/db/pg_hba.conf'
     access_to_database = 'host all all all scram-sha-256\n'
     
     with open(file_path, 'r') as file:
         text = file.read()
     
         if access_to_database not in text:
+            client = docker.from_env()
+            container_name = 'Postgres'
+            container = client.containers.get(container_name)
+        
             with open(file_path, 'a') as file:
                 file.writelines(access_to_database)
                 file.close()
 
+            container.restart()
+            sleep(5)
+
 elif name == 'nt':
-    # pg_hba.conf
+    # Доступ к бд Windows
     file_path = r'E:\\personal\\scripts\\postgresql\\pg_hba.conf'
     access_to_database = 'host all all all scram-sha-256\n'
     
@@ -28,7 +38,6 @@ elif name == 'nt':
                 file.writelines(access_to_database)
                 file.close()
 
-    # postgresql.conf
     file_path = r'E:\\personal\\scripts\\postgresql\\postgresql.conf'
     listen_addresses = "listen_addresses = '*'\n"
 
@@ -46,13 +55,13 @@ elif name == 'nt':
         file.writelines(lines)
 
 # Параметры подключения к PostgreSQL
-host = "10.0.0.30"
+host = "localhost"
 port = "5432"
-user = "postgres"    # Пользователь с правами на создание других пользователей
-password = "postgres"
-dbname = "postgres"
+user = "test1"    # Пользователь с правами на создание других пользователей
+password = "test1"
+dbname = "eosan"
 
-# Новые данные для создания пользователя и базы данных
+# Новые данные для создания пользователя
 new_db_user = "test"
 pass_for_new_user = "test"
 
@@ -64,7 +73,7 @@ try:
     cursor = conn.cursor()
 
     # Создание нового пользователя
-    cursor.execute(f"CREATE USER %s WITH PASSWORD %s", (AsIs(new_db_user), pass_for_new_user))    
+    cursor.execute(f"CREATE USER %s WITH PASSWORD %s SUPERUSER CREATEDB CREATEROLE LOGIN REPLICATION BYPASSRLS;", (AsIs(new_db_user), pass_for_new_user))    
     print(f"Пользователь '{new_db_user}' успешно создан.")
 
 except OperationalError as e:
