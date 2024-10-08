@@ -4,6 +4,7 @@ from os import name
 import docker
 from time import sleep
 import re
+import subprocess
 
 
 def database_access():
@@ -12,7 +13,6 @@ def database_access():
         file_path = "/path/to/pg_hba.conf"
         access_to_database = "host all all all scram-sha-256\n"
         pattern = r"host all all all scram-sha-256"
-        
         
         with open(file_path, "r") as file:
             text = file.read()
@@ -40,36 +40,52 @@ def database_access():
 
     elif name == "nt":
         # Доступ к бд Windows
-        file_path = r"E:\\personal\\scripts\\postgresql\\pg_hba.conf"
-        access_to_database = "host all all all scram-sha-256\n"
+        file_path = r"C:\path\to\pg_hba.conf"
+        access_to_database = "\nhost all all all scram-sha-256\n"
         pattern = r"host all all all scram-sha-256"
         
         with open(file_path, "r") as file:
             text = file.read()
             search_access = re.search(pattern, text)
-
+        
             if not search_access:
+                print("Adding database access...")
+                service_name = 'postgresql-x64-14'
+            
                 with open(file_path, "a") as file:
                     file.writelines(access_to_database)
                     file.close()
+                
+                file_path = r'C:\path\to\postgresql.conf'
+                listen_addresses = "listen_addresses = '*'\n"
+
+                # Открытие файла для чтения
+                with open(file_path, "r") as file:
+                    lines = file.readlines()
+
+                # Замена строки, содержащей часть текста
+                for i, line in enumerate(lines):
+                    if "listen_addresses" in line:
+                        lines[i] = listen_addresses
+
+                # Запись изменённых строк обратно в файл
+                with open(file_path, "w") as file:
+                    file.writelines(lines)
+                
+                try:
+                    subprocess.run(['sc', 'stop', service_name], check=True)
+                    sleep(3)
+                    subprocess.run(['sc', 'start', service_name], check=True)
+                    sleep(3)
+                except subprocess.CalledProcessError as e:
+                    print(f'Error: {e}')
             else:
                 print("Database access already exist!")
+                file.close()
+                return False
 
-        file_path = r'E:\\personal\\scripts\\postgresql\\postgresql.conf'
-        listen_addresses = "listen_addresses = '*'\n"
-
-        # Открытие файла для чтения
-        with open(file_path, "r") as file:
-            lines = file.readlines()
-
-        # Замена строки, содержащей часть текста
-        for i, line in enumerate(lines):
-            if "listen_addresses" in line:
-                lines[i] = listen_addresses
-
-        # Запись изменённых строк обратно в файл
-        with open(file_path, "w") as file:
-            file.writelines(lines)
+            file.close()
+            return True
 
 def create_db_user():
     # Параметры подключения к PostgreSQL
@@ -97,11 +113,13 @@ def create_db_user():
     except OperationalError as e:
         print(f"Error: '{e}'")
         return False
+
     finally:
         if conn:
             cursor.close()
             conn.close()
             print("The database connection is closed.")
+
 
 if __name__ == '__main__':
     if database_access():
