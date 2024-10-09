@@ -8,7 +8,6 @@ import subprocess
 
 # linux
 file_path_pg_hba_lin = "/path/to/pg_hba.conf"
-access_to_database_lin = "host all all all scram-sha-256\n"
 container_name = "Postgres"
 
 # windows
@@ -16,10 +15,10 @@ file_path_pg_hba_win = r"C:\path\to\pg_hba.conf"
 file_path_postgresql_conf_win = r"C:\path\to\postgresql.conf"
 service_name = 'postgresql-x64-14'
 change_listen_addresses = "listen_addresses = '*'\n"
-access_to_database_win = "\nhost all all all scram-sha-256\n"
 
 # linux and windows
 pattern_for_search_access = r"host all all all scram-sha-256"
+access_to_database = "\nhost all all all scram-sha-256\n"
 
 # Параметры подключения к PostgreSQL
 host = "localhost"
@@ -32,7 +31,7 @@ dbname = "postgres"
 new_db_user = "test"
 pass_for_new_user = "test"
 
-def database_access_lin(file_path_pg_hba_lin, access_to_database_lin, container_name, pattern_for_search_access):
+def database_access_lin(file_path_pg_hba_lin, access_to_database, container_name, pattern_for_search_access):
     with open(file_path_pg_hba_lin, "r") as file:
             text = file.read()
             search_access = re.search(pattern_for_search_access, text)
@@ -46,7 +45,7 @@ def database_access_lin(file_path_pg_hba_lin, access_to_database_lin, container_
                 # pg_hba.conf
                 # Добавить в конец файла access_to_database
                 with open(file_path_pg_hba_lin, "a") as file:
-                    file.writelines(access_to_database_lin)
+                    file.writelines(access_to_database)
 
                 container.restart()
                 sleep(5)
@@ -55,7 +54,7 @@ def database_access_lin(file_path_pg_hba_lin, access_to_database_lin, container_
                 return False
             return True
 
-def database_access_win(file_path_pg_hba_win, file_path_postgresql_conf_win, service_name, change_listen_addresses, pattern_for_search_access, access_to_database_win):
+def database_access_win(file_path_pg_hba_win, file_path_postgresql_conf_win, service_name, change_listen_addresses, pattern_for_search_access, access_to_database):
     with open(file_path_pg_hba_win, "r") as file:
         text = file.read()
         search_access = re.search(pattern_for_search_access, text)
@@ -66,7 +65,7 @@ def database_access_win(file_path_pg_hba_win, file_path_postgresql_conf_win, ser
             # pg_hba.conf
             # Добавить в конец файла access_to_database
             with open(file_path_pg_hba_win, "a") as file:
-                file.writelines(access_to_database_win)
+                file.writelines(access_to_database)
 
             # postgresql.conf
             # Открытие файла для чтения
@@ -119,10 +118,10 @@ def create_db_user(host, port, user, password, dbname, new_db_user, pass_for_new
 if __name__ == '__main__':
 
     if name == "posix":
-        if database_access_lin(file_path_pg_hba_lin, access_to_database_lin, container_name, pattern_for_search_access):
+        if database_access_lin(file_path_pg_hba_lin, access_to_database, container_name, pattern_for_search_access):
             print("Access added successfully")
     elif name == "nt":
-        if database_access_win(file_path_pg_hba_win, file_path_postgresql_conf_win, service_name, change_listen_addresses, pattern_for_search_access, access_to_database_win):
+        if database_access_win(file_path_pg_hba_win, file_path_postgresql_conf_win, service_name, change_listen_addresses, pattern_for_search_access, access_to_database):
             print("Access added successfully")
     
     if create_db_user(host, port, user, password, dbname, new_db_user, pass_for_new_user):
