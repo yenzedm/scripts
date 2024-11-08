@@ -20,18 +20,21 @@ def check_host_all_line(file_path):
         print(f"File not found: {file_path}")
         return False
 
-def check_listen_addresses(file_path):
+def check_listen_addresses(host, port, user, password, dbname):
     try:
-        with open(file_path, 'r') as file:
-            for line in file:
-                if "listen_addresses = '*'" in line:
-                    print("Found: listen_addresses = '*'")
-                    return True
-            print("Not found: listen_addresses = '*'")
-            return False
+        conn = connect(database=dbname, user=user, password=password, host=host, port=port)
+        conn.autocommit = True
+        cursor = conn.cursor()
+        cursor.execute("SHOW listen_addresses;")
+        listen_addresses = cursor.fetchall()
+        for i in listen_addresses:
+            if '*' in i:
+                print("Found: * for listen_addresses")
+                return True
+        print("Not found: * for listen_addresses")
+        return False
     except FileNotFoundError:
         print("Error in block 'check_listen_addresses'")
-        print(f"File not found: {file_path}")
         return False
 
 def reload_pg_hba_conf(host, port, user, password, dbname):
@@ -112,7 +115,7 @@ def change_postgresql_conf(host, port, user, password, dbname):
         service_name = "PostgreSQL"
         file_path_postgresql_conf = r"C:\RECFACES\DATA\postgresql\postgresql.conf"
 
-    if not check_listen_addresses(file_path_postgresql_conf):
+    if not check_listen_addresses(host, port, user, password, dbname):
         print("change postgresql.conf configuration...")
         try:
             conn = connect(database=dbname, user=user, password=password, host=host, port=port)
