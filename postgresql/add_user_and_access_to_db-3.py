@@ -62,11 +62,7 @@ def reload_postgres_conf(service_name):
         except Exception as e:
             print("Error in block 'reload_postgres_conf/posix")
             print(f'Error: {e}')
-            return False
-        finally:
-            if conn:
-                cursor.close()
-                conn.close()
+            return False 
     elif name == "nt":
         try:
             subprocess.run(['sc', 'stop', "IdMe-mas-meta-server-api"], check=True)
