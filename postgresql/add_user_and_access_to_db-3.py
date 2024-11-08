@@ -36,6 +36,10 @@ def check_listen_addresses(host, port, user, password, dbname):
     except FileNotFoundError:
         print("Error in block 'check_listen_addresses'")
         return False
+    finally:
+        if conn:
+            cursor.close()
+            conn.close()
 
 def reload_pg_hba_conf(host, port, user, password, dbname):
     try:
