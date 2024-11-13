@@ -94,9 +94,9 @@ def change_pg_hba(host, port, user, password, dbname):
     access_to_database = "host all all all scram-sha-256"
 
     if name == "posix":
-        file_path_pg_hba = "/opt/recfaces/DATA/db/pg_hba.conf"
+        file_path_pg_hba = "path/to/pg_hba.conf" # !!!
     elif name == "nt":
-        file_path_pg_hba = r"C:\RECFACES\DATA\postgresql\pg_hba.conf"
+        file_path_pg_hba = r"C:\path\to\pg_hba.conf" # !!!
 
     if not check_host_all_line(file_path_pg_hba):
         print("change pg_hba.conf configuration...")
@@ -114,10 +114,10 @@ def change_pg_hba(host, port, user, password, dbname):
 def change_postgresql_conf(host, port, user, password, dbname):
     if name == "posix":
         service_name = "Postgres"
-        file_path_postgresql_conf = "/opt/recfaces/DATA/db/postgresql.conf"
+        file_path_postgresql_conf = "/path/to/postgresql.conf" # !!!
     elif name == "nt":
         service_name = "PostgreSQL"
-        file_path_postgresql_conf = r"C:\RECFACES\DATA\postgresql\postgresql.conf"
+        file_path_postgresql_conf = r"C:\path\to\postgresql.conf" # !!!
 
     if not check_listen_addresses(host, port, user, password, dbname):
         print("change postgresql.conf configuration...")
