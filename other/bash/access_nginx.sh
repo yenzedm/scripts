@@ -3,7 +3,7 @@
 # path to conf
 NGINX_CONF="$2"
 
-CONTAINER_NAME="Webserver"
+CONTAINER_NAME="" # !!!
 
 # check arg
 if [ -z "$1" ]; then
@@ -31,7 +31,7 @@ else
     :
 fi
 
-if curl --fail http://10.0.4.240:23231/service/v1/mas/settings/event.configuration.api.logLevel/value; then
+if curl --fail http://ip:port/; then   # !!!
     echo -e "\nrestart nginx done"    
 else
     docker restart "$CONTAINER_NAME"
