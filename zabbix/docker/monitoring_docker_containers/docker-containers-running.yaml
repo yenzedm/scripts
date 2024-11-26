@@ -1,0 +1,30 @@
+zabbix_export:
+  version: '7.0'
+  template_groups:
+    - uuid: a571c0d144b14fd4a87a9d9b2aa9fcd6
+      name: Templates/Applications
+  templates:
+    - uuid: 7ef5a9daec394beeb055085fc22e0641
+      template: 'Docker containers running'
+      name: 'Docker containers running'
+      groups:
+        - name: Templates/Applications
+      discovery_rules:
+        - uuid: e8079f82e6ea4735a54a50dad461779c
+          name: 'Docker container is not running'
+          key: docker.image_names
+          delay: 10s
+          lifetime: 30d
+          enabled_lifetime_type: DISABLE_NEVER
+          item_prototypes:
+            - uuid: 93e3b0fee74747b5b0e287a7dfe395a8
+              name: 'Docker container is not running with image [{#NAME}]'
+              key: 'docker.container.image_name[{#NAME}]'
+              delay: 10s
+              history: 90d
+              trigger_prototypes:
+                - uuid: 0fb74e34ef2c4cde8798b645b07fe26f
+                  expression: 'last(/Docker containers running/docker.container.image_name[{#NAME}])=0'
+                  name: 'Docker container is not running with image [{#NAME}]'
+                  priority: WARNING
+                  manual_close: 'YES'
