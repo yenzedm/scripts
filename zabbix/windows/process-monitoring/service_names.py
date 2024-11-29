@@ -11,7 +11,7 @@ def get_list_idme_processes():
     for proc in psutil.process_iter(['pid', 'name', 'status']):
         try:
             # Filter only 'runner' processes
-            if 'runner' in proc.info['name']:
+            if 'runner' in proc.info['name']:   #!!!
                 process_name = proc.info['name'] + '_' + str(proc.info['pid']) 
                 idme_processes_tmp.append({'{#NAME}': process_name})
                 sleep(0.1)

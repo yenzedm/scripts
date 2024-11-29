@@ -2,7 +2,7 @@ from random import choice
 from string import printable
 
 
-signs_and_letters = [i for i in printable][-7::-1]
+signs_and_letters = [i for i in printable][0:62]
 password_number = int(input('Enter the password number: '))
 result = []
 
