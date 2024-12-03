@@ -1,0 +1,1 @@
+1. Don't forget "chmod +x" for scripts!
