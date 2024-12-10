@@ -21,7 +21,7 @@
 		выполняется скрипт confluence_page_exist.py
 		обновляет html блок содержимым diagram.svg
 ***
-ubuntu 22.04
+- ubuntu 22.04
 - sudo apt install nodejs
 - sudo apt install npm
 - sudo npm install -g n
@@ -32,17 +32,17 @@ ubuntu 22.04
 - sudo apt install -y libcups2 libxcomposite1 libxrandr2 libgbm1 libpango-1.0-0 libpangocairo-1.0-0 libxshmfence1
 - mmdc -i diagram.mmd -o diagram.svg
 ***
-ubuntu 24.04
-sudo apt install nodejs
-sudo apt install npm
-sudo npm install -g n
-sudo n lts - обновить nodejs
-sudo npm install -g @mermaid-js/mermaid-cli
-npx puppeteer browsers install chrome или npx puppeteer browsers install chrome-headless-shell (rm -rf ~/.cache/puppeteer)
-Отключить AppArmor:
-sudo sysctl -w kernel.apparmor_restrict_unprivileged_unconfined=0
-sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
-mmdc -i diagram.mmd -o diagram.svg
-Включить AppArmor:
-sudo sysctl -w kernel.apparmor_restrict_unprivileged_unconfined=1
-sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=1
+- ubuntu 24.04
+- sudo apt install nodejs
+- sudo apt install npm
+- sudo npm install -g n
+- sudo n lts - обновить nodejs
+- sudo npm install -g @mermaid-js/mermaid-cli
+- npx puppeteer browsers install chrome или npx puppeteer browsers install chrome-headless-shell (rm -rf ~/.cache/puppeteer)
+- Отключить AppArmor:
+- sudo sysctl -w kernel.apparmor_restrict_unprivileged_unconfined=0
+- sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
+- mmdc -i diagram.mmd -o diagram.svg
+- Включить AppArmor:
+- sudo sysctl -w kernel.apparmor_restrict_unprivileged_unconfined=1
+- sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=1
