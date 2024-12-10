@@ -2,21 +2,22 @@ import requests
 import sys
 import json
 import logging
+import urllib3
 
+ 
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-#Logger initialization
 SCRIPTNAME = "release_policy_gitlab"
-logger = logging.getLogger(SCRIPTNAME) # Initialize and declare logger name
-logger.setLevel(logging.DEBUG) # Set logging level
-console_out = logging.StreamHandler() # Attach log handler to stdout
-strfmt = '[%(asctime)s] [%(name)s] [%(levelname)s] > %(message)s' # Define log message format for better readability
-datefmt = '%Y-%m-%d %H:%M:%S' # Define date and time format in logs
-formatter = logging.Formatter(fmt=strfmt, datefmt=datefmt) # Create formatter with the defined formats
-console_out.setFormatter(formatter) # Apply formatting to the log output
-logger.addHandler(console_out) # Enable log output handler
+logger = logging.getLogger(SCRIPTNAME)
+logger.setLevel(logging.DEBUG)
+console_out = logging.StreamHandler()
+strfmt = '[%(asctime)s] [%(name)s] [%(levelname)s] > %(message)s'
+datefmt = '%Y-%m-%d %H:%M:%S'
+formatter = logging.Formatter(fmt=strfmt, datefmt=datefmt)
+console_out.setFormatter(formatter)
+logger.addHandler(console_out)
 
 def main(GITLAB_URL, ACCESS_TOKEN, GROUP_NAME, PROJECT_NAME, SOURCE_BRANCH, TARGET_BRANCH):
-    # Set authorization headers
     headers = {
         'PRIVATE-TOKEN': ACCESS_TOKEN,
         'Content-Type': 'application/json'
@@ -26,75 +27,37 @@ def main(GITLAB_URL, ACCESS_TOKEN, GROUP_NAME, PROJECT_NAME, SOURCE_BRANCH, TARG
     data = json.loads(GET_PROJECT.content)
     PROJECT_ID = data['id']
 
-    check_target_branch = f"{GITLAB_URL}/api/v4/projects/{PROJECT_ID}/repository/branches?branch={TARGET_BRANCH}"
+    check_target_branch = f"{GITLAB_URL}/api/v4/projects/{PROJECT_ID}/repository/branches"
 
-    # Check if the TARGET_BRANCH exists
     response = requests.get(check_target_branch, headers=headers, verify=False)
 
     if response.status_code == 404:
-        logger.error(f"35: Branch {TARGET_BRANCH} does not exist")
+        logger.error(f"39: can't get a list of branches {response.status_code}")
         sys.exit(1)
-
-    # Transfer to protected_branch both branches
-    if 'rc' in SOURCE_BRANCH and 'build' in TARGET_BRANCH:
-        #Get a list of all protected branches
-        protected_branches = f"{GITLAB_URL}/api/v4/projects/{PROJECT_ID}/protected_branches"
-
-        response = requests.get(protected_branches, headers=headers, verify=False)
-
-        if SOURCE_BRANCH not in response.text:
-            # The branch is not protected, create a new protected branch with restrictions
-            logger.info(f"47: Add {SOURCE_BRANCH} in protected branches")
-            payload = {
-                "name": SOURCE_BRANCH,
-                "push_access_level": 0,  
-                "merge_access_level": 0,    
-            }
-            create_url = f"{GITLAB_URL}/api/v4/projects/{PROJECT_ID}/protected_branches"
-            response = requests.post(create_url, headers=headers, json=payload, verify=False)
-
-            if response.status_code == 201:
-                logger.info(f'57: Protected branch "{SOURCE_BRANCH}" created with no push/merge permissions.')
-            else:
-                logger.error(f"59: Failed to protect branch. Status code: {response.status_code}, Response: {response.text}")
-        else:
-            logger.info(f"61: Branch {SOURCE_BRANCH} is protected")
-            sys.exit(0)
-
-        if TARGET_BRANCH not in response.text:
-            # The branch is not protected, create a new protected branch with restrictions
-            logger.info(f"66: Add {TARGET_BRANCH} in protected branches")
-            payload = {
-                "name": TARGET_BRANCH,
-                "push_access_level": 0,  
-                "merge_access_level": 0,    
-            }
-            create_url = f"{GITLAB_URL}/api/v4/projects/{PROJECT_ID}/protected_branches"
-            response = requests.post(create_url, headers=headers, json=payload, verify=False)
-
-            if response.status_code == 201:
-                logger.info(f'76: Protected branch "{TARGET_BRANCH}" created with no push/merge permissions.')
-            else:
-                logger.error(f"78: Failed to protect branch. Status code: {response.status_code}, Response: {response.text}")
-        else:
-            logger.info(f"80: Branch {TARGET_BRANCH} is protected")
-            sys.exit(0)
-    elif SOURCE_BRANCH == 'develop':
-        logger.info(f'83: Skip protected {SOURCE_BRANCH} branch')
+    else:
+        tmp = json.loads(response.text)
+        flag = True
+        for branch in tmp:
+            if branch['name'] == TARGET_BRANCH:
+                flag = False
+                break
+        if flag:    
+            logger.error(f"49: branch {TARGET_BRANCH} does not exist")
+            sys.exit(1)
+    if SOURCE_BRANCH == 'develop':
+        logger.info(f'52: skip protected {SOURCE_BRANCH} branch')
         sys.exit(0)
     else:
         protected_branches = f"{GITLAB_URL}/api/v4/projects/{PROJECT_ID}/protected_branches"
 
-        # Get a list of all protected branches
         response = requests.get(protected_branches, headers=headers, verify=False)
         
         if response.status_code == 200 and 'build' in SOURCE_BRANCH and SOURCE_BRANCH in response.text:
-            logger.info(f"92: Branch {SOURCE_BRANCH} already protected and limited")
+            logger.info(f"61: branch {SOURCE_BRANCH} already protected and limited")
             sys.exit(0)
 
         elif SOURCE_BRANCH not in response.text:
-            # The branch is not protocted, create a new protected branch with restrictions
-            logger.info(f"97: Add {SOURCE_BRANCH} in protected branches")
+            logger.info(f"66: add {SOURCE_BRANCH} in protected branches")
             payload = {
                 "name": SOURCE_BRANCH,
                 "push_access_level": 0,  
@@ -104,9 +67,9 @@ def main(GITLAB_URL, ACCESS_TOKEN, GROUP_NAME, PROJECT_NAME, SOURCE_BRANCH, TARG
             response = requests.post(create_url, headers=headers, json=payload, verify=False)
 
             if response.status_code == 201:
-                logger.info(f'107: Protected branch "{SOURCE_BRANCH}" created with no push/merge permissions.')
+                logger.info(f'76: protected branch "{SOURCE_BRANCH}" created with no push/merge permissions.')
             else:
-                logger.error(f"109: Failed to protect branch. Status code: {response.status_code}, Response: {response.text}")
+                logger.error(f"78: failed to protect branch. Status code: {response.status_code}, Response: {response.text}")
 
 
 if __name__ == '__main__':
