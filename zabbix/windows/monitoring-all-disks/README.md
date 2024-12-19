@@ -3,4 +3,4 @@
 1. Type: zabbix-agent
 2. Discovery rule key: vfs.fs.discovery
 3. Item prototypes key: vfs.fs.size[{#FSNAME},free]
-4. Trigger prototypes expression: last(/<template_name or host>/vfs.fs.size[{#FSNAME},free])<25000000000
+4. Trigger prototypes expression: last(/<template_name or host>/vfs.fs.size[{#FSNAME},free]) \< \<number of bytes\> 25000000000 = 25gb
