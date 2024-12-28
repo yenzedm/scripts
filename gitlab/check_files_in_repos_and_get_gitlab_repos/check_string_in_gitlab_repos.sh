@@ -1,12 +1,10 @@
 #!/bin/bash
 
-GITLAB_URL=$1
-PRIVATE_TOKEN=$2
-SEARCH_STRING=$3
+SEARCH_STRING=$1
 TEMP_DIR="gitlab_repos"
-BRANCH_NAME=$4
+BRANCH_NAME=$2
 
-if [[ -z "$GITLAB_URL" || -z "$PRIVATE_TOKEN" || -z "$SEARCH_STRING" || -z "$BRANCH_NAME" ]]; then
+if [[ -z "$SEARCH_STRING" || -z "$BRANCH_NAME" ]]; then
     echo "Usage: $0 <gitlab_url> <private_token> <search_string> <branch_name>"
     exit 1
 fi
