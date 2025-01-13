@@ -1,0 +1,42 @@
+doc [main]
+info
+tools
+network
+logs
+pac-man - all pack managers (apt, yum and other)
+useful
+monitoring
+fs
+services
+proces
+cheatsheet
+users
+groups
+python
+permissions
+
+[os]
+nix
+win
+
+[fs]
+dir
+files
+archive
+text
+text-edit
+
+| grep:
+files
+dir
+other
+script
+proces
+fs - file systems
+db
+text
+devops
+programs
+network
+log
+device
