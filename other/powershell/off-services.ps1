@@ -15,7 +15,7 @@ foreach ($service in $services) {
     $processName = $service.Name -replace $replacePattern, ""
     Write-Host "$processName"
     if ($processName -eq "<some exception of the rule>") {
-        $processName = "<its name>"
+        $processName = "<its real name>"
     }
 
     # looking for a ProcessName
