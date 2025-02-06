@@ -40,17 +40,17 @@ for repo in $repos; do
     results=$(git grep -n "$SEARCH_STRING")
 
     if [ -n "$results" ]; then
-        echo "Found in $repo_name:"
-        echo "$results"
+        echo "Found in $repo_name:" >> /home/eremeevda/work/tmp/found.txt
+        echo "$results" >> /home/eremeevda/work/tmp/found.txt
     else
-        echo "Str not found in $repo_name."
+        echo "Str not found in $repo_name." >> /home/eremeevda/work/tmp/not_found.txt
     fi
 
     # Return back and delete the clone repo
     cd ..
-    # rm -rf "$repo_name"  !!!
+    rm -rf "$repo_name"
 done
 
 # Delete temp directory
 cd ..
-# rm -rf "$TEMP_DIR" !!!!
+rm -rf "$TEMP_DIR"
