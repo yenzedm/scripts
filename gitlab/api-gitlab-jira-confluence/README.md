@@ -1,5 +1,3 @@
-# Release Policy
-***
 - создаётся ветка в gitlab с названием target ветки
 - source ветка указывается через переменную в gitlab
 - при вызове скрипта check_page_exist.py пайплайном, скрипт:
