@@ -24,5 +24,5 @@ else
 
 for item in "${tmp[@]}"; do
     echo "$item"
-    python3 gitlab.py https://gitlab.hq.lan $gitlab_token $project_group $item $source_branch $target_branch
+    python3 gitlab.py https://gitlab.hq.lan $gitlab_token $project_group $item $source_branch $target_branch # scripts/gitlab/api-gitlab-jira-confluence/gitlab.py
 done
