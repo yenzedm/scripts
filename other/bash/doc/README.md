@@ -84,24 +84,15 @@ IT IS UNDESIRABLE TO USE THE UNDERSCORE CHARACTER "_" IN CONFIG TAGS
 
 ## Usage:
 
-download tagdoc.sh tagdoc.conf
-
-mkdir -p ~/work/tagdoc создали каталог
-cd ~/work/tagdoc  перешли в него скачали файл.
-wget https://raw.githubusercontent.com/tagd-tagd/tagdoc/refs/heads/main/tagdoc.sh
-
-создали полный путь в переменной
-AL="$PWD/doc.sh"
-
-сделали исполняемым.
-chmod a+x "$AL"
-
-создали алиас для удобного запуска
-содержимое $AL в кавычках
-echo alias doc=${AL@Q} >> ~/.bashrc
-
-применили изменение .bashrc
-exec bash
+- mkdir doc
+- cd doc
+- wget https://raw.githubusercontent.com/yenzedm/scripts/refs/heads/master/other/bash/doc/doc.sh
+- AL="$PWD/doc.sh"
+- chmod a+x "$AL"
+- echo alias doc=${AL@Q} >> ~/.bashrc
+- exec bash
+- cp doc.conf /home/mit/doc/
+- doc git
 
 **chmod +x ./tagdoc.sh**
 
