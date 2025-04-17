@@ -79,16 +79,6 @@ Script: `check_page_exist.py`
 
 ---
 
-### 📦 Scripts used
-
-- `check_page_exist.py`
-- `create_gitgraph.py`
-- `update_gitgraph.py`
-- `confluence_page_not_exist.py`
-- `confluence_page_exist.py`
-- `jira_project_releases.py`
-- `create-history-task.py`
-
 # 🛠️ Installing `@mermaid-js/mermaid-cli` on GitLab Runner
 
 This guide covers installation on Ubuntu versions **20.04**, **22.04**, and **24.04**.
