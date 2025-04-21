@@ -5,7 +5,7 @@
 
 sudo gitlab-runner stop
 sudo gitlab-runner uninstall
-sudo rm -f /usr/local/sbin/gitlab-runner
+sudo rm -f /usr/local/bin/gitlab-runner
 sudo userdel -r gitlab-runner
 sudo rm -rf /etc/gitlab-runner
 sudo rm -rf /home/gitlab-runner
