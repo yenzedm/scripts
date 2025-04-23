@@ -35,11 +35,11 @@ function do_recover() {
         exit 1
     fi
 
-    #For encoding
-    /usr/bin/openssl des -d -in "$backup_file" -out "$backup_file".tar.gz
+    # For encoding (need finalize)
+    #/usr/bin/openssl des -d -in "$backup_file" -out "$backup_file".tar.gz
     
     #Decompress archive and overwrite files with backup data
-    tar -xzf "$backup_file".tar.gz -C "$recover_directory" --overwrite
+    tar -xzf "$backup_file" -C "$recover_directory" --overwrite
 
     if [ $? -eq 0 ]; then
         echo "Backup was recovered succesfully"
@@ -71,11 +71,11 @@ function create_backup() {
     # Creating backup due to archiving files and compressing it
     tar -cvf - "$source_directory" | gzip -9c > "$backup_directory/$backup_name".gz
     
-    #Securing reserve copy
-    /usr/bin/openssl des -in "$backup_directory/$backup_name".gz -out "$backup_directory/$backup_name".sec
+    #Securing reserve copy (need finalize)
+    #/usr/bin/openssl des -in "$backup_directory/$backup_name".gz -out "$backup_directory/$backup_name".sec
     
     #Setting +i attr for defence from deleting or updating
-    sudo chattr +i "$backup_directory/$backup_name".sec
+    #sudo chattr +i "$backup_directory/$backup_name".gz 
 
     #Checking if backup was created
     if [ $? -eq 0 ]; then
@@ -84,8 +84,8 @@ function create_backup() {
         echo "There is something wrong with backup creating"
     fi
     
-    #Deleting archive for security
-    rm -rf "$backup_directory/$backup_name".gz
+    #Deleting archive for security (need finalize)
+    #rm -rf "$backup_directory/$backup_name".gz
 }
 
 function main() {
