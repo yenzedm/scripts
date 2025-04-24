@@ -3,8 +3,8 @@
 INTERFACE="eth0"
 INTERVAL=1
 
-echo "🔍 Мониторинг сетевого интерфейса: $INTERFACE"
-echo "Нажмите Ctrl+C для выхода."
+echo "🔍 Monitoring network interface: $INTERFACE"
+echo "Enter Ctrl+C for exit."
 echo
 
 while true; do
