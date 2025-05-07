@@ -7,7 +7,7 @@ def add_quotes_to_words(file_path):
 
         # We divide the text into words, add quotes and combine them back
         words = content.split()
-        quoted_words = ['"{}"'.format(word) for word in words]
+        quoted_words = ['`{}`'.format(word) for word in words]
         new_content = " ".join(quoted_words)
 
         # Overwriting a file with changed contents
