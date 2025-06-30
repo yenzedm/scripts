@@ -78,7 +78,7 @@ def get_all_service():
         print(service_name)
 
 if __name__ == "__main__":
-    func = argv[1]
+    func = argv[1] if len(argv) > 1 else None
     service = argv[2] if len(argv) > 2 else None
     password = argv[3] if len(argv) > 3 else None
     if func == "get":
@@ -93,3 +93,8 @@ if __name__ == "__main__":
         add_password(service, password)
     elif func == "all":
         get_all_service()
+    else:
+        print("use ./kp.py add service pass - add service and password")
+        print("use ./kp.py get service - get specified service")
+        print("use ./kp.py all - view all services")
+        print("use ./kp.py delete service - delete specified service")      
