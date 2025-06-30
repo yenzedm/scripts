@@ -104,3 +104,6 @@ elif [ "$mode" == "vmstat" ]; then
     echo "avg = $avg"
 fi
 
+
+# iostat -x sda 3 > out_iostat.txt
+# vmstat 3 > out_vmstat.txt
