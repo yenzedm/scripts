@@ -1,13 +1,15 @@
 from random import choice
 from string import printable
 
-
-signs_and_letters = [i for i in printable][0:62]
+#without signs
+#custom_printable = [i for i in printable][0:62]
+#full printable
+custom_printable = [i for i in printable][0:94]
 password_number = int(input('Enter the password number: '))
 result = []
 
 for _ in range(password_number):
-    tmp = choice(signs_and_letters)
+    tmp = choice(custom_printable)
     result.append(tmp)
 
 print(''.join(result))
