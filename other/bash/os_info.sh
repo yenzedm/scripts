@@ -5,36 +5,7 @@ clear
 
 unset os architecture kernelrelease internalip externalip nameserver loadaverage
 
-# Process command line options
-while getopts iv name
-do
-    case $name in
-        i) iopt=1;;  # Installation flag
-        v) vopt=1;;  # Version flag
-        *) echo "Invalid argument";;
-    esac
-done
-
-# Install script to /usr/bin if -i option is set
-if [[ ! -z $iopt ]]
-then
-{
-    wd=$(pwd)
-    basename "$(test -L "$0" && readlink "$0" || echo "$0")" > /tmp/scriptname
-    scriptname=$(echo -e -n $wd/ && cat /tmp/scriptname)
-    su -c "cp $scriptname /usr/bin/monitor" root && echo "Congratulations! Script Installed, now run monitor Command" || echo "Installation failed"
-}
-fi
-
-# Show version if -v option is set
-if [[ ! -z $vopt ]]
-then
-{
-    echo "System Monitor Script v1.1"
-}
-fi
-
-# Main monitoring functionality when no options are provided
+# Main monitoring functionality
 if [[ $# -eq 0 ]]
 then
 {
@@ -61,12 +32,12 @@ then
     # Get hostname
     echo "Hostname : $HOSTNAME"
 
-    # Get internal IP address
-    internalip=$(hostname -I)
-    echo "Internal IP : $internalip"
+    # Get internal IPs with interfaces
+    echo "Internal IPs:"
+    ip -br addr show | awk '!/LOOPBACK/ && /UP/ {gsub(/\/.+/, "", $3); print $1 ": " $3}'
 
     # Get external IP address
-    externalip=$(curl -s ipecho.net/plain;echo)
+    externalip=$(curl ifconfig.me ; echo)
     echo "External IP : $externalip"
 
     # Get DNS nameservers
@@ -82,16 +53,14 @@ then
     echo "CPU Usage : $cpu_usage"
 
     # Get RAM and swap usage
-    free -h | grep -v + > /tmp/ramcache
-    echo "Ram Usages :"
-    cat /tmp/ramcache | grep -v "Swap"
-    echo "Swap Usages :"
-    cat /tmp/ramcache | grep -v "Mem"
+    free | grep Mem | awk '{printf "RAM Usage: %.1f%%\n", ($2 - $7) / $2 * 100.0}'
+    free | grep Swap | awk '{printf "Swap Usage: %.1f%%\n", $3/$2 * 100.0}'
 
-    # Get disk usage information
-    df -h| grep 'Filesystem\|/dev/sd*' > /tmp/diskusage
     echo "Disk Usages :"
-    cat /tmp/diskusage
+    df -h | grep '^/dev/' | while read -r line; do
+        cur_space=$(echo "$line" | awk '{print $(NF-1)}' | sed 's/%//')
+        partition=$(echo "$line" | awk '{print $1}')
+        echo "$partition: $cur_space% used"; done   
 
     # Get system load average
     loadaverage=$(top -n 1 -b | grep "load average:" | awk '{print $10 $11 $12}')
@@ -105,7 +74,7 @@ then
     unset os architecture kernelrelease internalip externalip nameserver loadaverage
 
     # Remove temporary files
-    rm /tmp/osrelease /tmp/who /tmp/ramcache /tmp/diskusage &> /dev/null
+    rm /tmp/osrelease /tmp/who /tmp/diskusage &> /dev/null
 }
 fi
 shift $(($OPTIND -1))
