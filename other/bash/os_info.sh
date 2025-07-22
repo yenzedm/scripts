@@ -37,7 +37,7 @@ then
     ip -br addr show | awk '!/LOOPBACK/ && /UP/ {gsub(/\/.+/, "", $3); print $1 ": " $3}'
 
     # Get external IP address
-    externalip=$(curl ifconfig.me ; echo)
+    externalip=$(curl -s ifconfig.me ; echo)
     echo "External IP : $externalip"
 
     # Get DNS nameservers
@@ -63,7 +63,7 @@ then
         echo "$partition: $cur_space% used"; done   
 
     # Get system load average
-    loadaverage=$(top -n 1 -b | grep "load average:" | awk '{print $10 $11 $12}')
+    loadaverage=$(top -n 1 -b | grep "load average:" | awk '{print $11 $12 $13}')
     echo "Load Average : $loadaverage"
 
     # Get system uptime
