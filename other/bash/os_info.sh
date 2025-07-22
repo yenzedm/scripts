@@ -54,7 +54,7 @@ then
 
     # Get RAM and swap usage
     free | grep Mem | awk '{printf "RAM Usage: %.1f%%\n", ($2 - $7) / $2 * 100.0}'
-    free | grep Swap | awk '{printf "Swap Usage: %.1f%%\n", $3/$2 * 100.0}'
+    free | grep Swap | awk '{if ($2 == 0) print "Swap is disabled"; else printf "Swap Usage: %.1f%%\n", $3/$2 * 100.0}'
 
     echo "Disk Usages :"
     df -h | grep '^/dev/' | while read -r line; do
