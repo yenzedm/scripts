@@ -74,7 +74,7 @@ then
     unset os architecture kernelrelease internalip externalip nameserver loadaverage
 
     # Remove temporary files
-    rm /tmp/osrelease /tmp/who /tmp/diskusage &> /dev/null
+    rm /tmp/osrelease /tmp/who &> /dev/null
 }
 fi
 shift $(($OPTIND -1))
