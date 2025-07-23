@@ -1,9 +1,9 @@
 #!/bin/bash
-# Reset ll variables that might be used by the system
+# Reset all variables that might be used by the system
 # Clear terminal screen
 clear
 
-unset os architecture kernelrelease internalip externalip loadaverage
+unset os architecture kernelrelease externalip loadaverage
 
 # Main monitoring functionality
 if [[ $# -eq 0 ]]
@@ -48,12 +48,18 @@ then
     who > /tmp/who
     echo "Logged In users : " && cat /tmp/who
 
+    #CPU info
+    echo "CPU: $(grep "model name" /proc/cpuinfo | head -n 1 | cut -d ':' -f 2 | sed 's/^[ \t]*//')" && echo "Cores: $(grep "cpu cores" /proc/cpuinfo | head -n 1 | cut -d ':' -f 2 | sed 's/^[ \t]*//')" && echo "Threads: $(grep -c "^processor" /proc/cpuinfo)" && echo "Cache: $(grep "cache size" /proc/cpuinfo | head -n 1 | cut -d ':' -f 2 | sed 's/^[ \t]*//')" && echo "Flags: $(grep "flags" /proc/cpuinfo | head -n 1 | cut -d ':' -f 2 | sed 's/^[ \t]*//' | tr ' ' '\n' | tr '\n' ' ')"
+
     # Get CPU usage information
     vmstat 1 2 | tail -1 | awk '{printf "CPU Usage: %.1f%%\n", 100 - $15}'
 
     #top processes using CPU
     echo "top processes using CPU:"
     top -b -n 1 -o %CPU | head -n 18 | tail -n +7
+
+    # Get total RAM
+    free -h | awk '/^Mem:/ {print "Total RAM: "$2}'
 
     # Get RAM and swap usage
     free | grep Mem | awk '{printf "RAM Usage: %.1f%%\n", ($2 - $7) / $2 * 100.0}'
