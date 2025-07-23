@@ -1,5 +1,5 @@
 #!/bin/bash
-# Reset all variables that might be used by the system
+# Reset ll variables that might be used by the system
 # Clear terminal screen
 clear
 
