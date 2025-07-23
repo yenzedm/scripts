@@ -71,7 +71,7 @@ then
         echo "$partition: $cur_space% used"; done   
 
     # Get system load average
-    loadaverage=$(top -n 1 -b | grep "load average:" | awk '{print $11 $12 $13}')
+    loadaverage=$(top -n 1 -b | grep "load average:" | awk '{print $(NF-2) $(NF-1) $NF}')
     echo "Load Average : $loadaverage"
 
     # Get system uptime
