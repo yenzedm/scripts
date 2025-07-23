@@ -3,7 +3,7 @@
 # Clear terminal screen
 clear
 
-unset os architecture kernelrelease internalip externalip nameserver loadaverage
+unset os architecture kernelrelease internalip externalip loadaverage
 
 # Main monitoring functionality
 if [[ $# -eq 0 ]]
@@ -41,8 +41,8 @@ then
     echo "External IP : $externalip"
 
     # Get DNS nameservers
-    nameservers=$(grep -E '^nameserver' /etc/resolv.conf | awk '{print $2}' | tr '\n' ' ')
-    echo "Name Servers : $nameservers"
+    echo "Name Servers:"
+    (resolvectl status 2>/dev/null || systemd-resolve --status 2>/dev/null || cat /etc/resolv.conf) | grep -E "DNS Servers|nameserver" | awk '{print $0}' | sed 's/^[ \t]*//'
 
     # Get logged in users
     who > /tmp/who
