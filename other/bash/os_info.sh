@@ -49,13 +49,21 @@ then
     echo "Logged In users : " && cat /tmp/who
 
     # Get CPU usage information
-    cpu_usage=$(top -bn1 | grep "Cpu(s)" | awk '{print 100 - $8"% free"}')
-    echo "CPU Usage : $cpu_usage"
+    vmstat 1 2 | tail -1 | awk '{printf "CPU Usage: %.1f%%\n", 100 - $15}'
+
+    #top processes using CPU
+    echo "top processes using CPU:"
+    top -b -n 1 -o %CPU | head -n 18 | tail -n +7
 
     # Get RAM and swap usage
     free | grep Mem | awk '{printf "RAM Usage: %.1f%%\n", ($2 - $7) / $2 * 100.0}'
     free | grep Swap | awk '{if ($2 == 0) print "Swap is disabled"; else printf "Swap Usage: %.1f%%\n", $3/$2 * 100.0}'
 
+    #top processes using RAM
+    echo "top processes using RAM:"
+    top -b -n 1 -o %MEM | head -n 18 | tail -n +7
+
+    #Get disks info
     echo "Disk Usages :"
     df -h | grep '^/dev/' | while read -r line; do
         cur_space=$(echo "$line" | awk '{print $(NF-1)}' | sed 's/%//')
