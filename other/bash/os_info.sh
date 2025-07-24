@@ -91,4 +91,3 @@ then
     rm /tmp/osrelease /tmp/who &> /dev/null
 }
 fi
-shift $(($OPTIND -1))
