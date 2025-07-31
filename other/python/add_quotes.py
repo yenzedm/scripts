@@ -1,6 +1,11 @@
 import sys
 
 def add_quotes_to_words(file_path):
+    """
+    Example: 
+    File contains 1 line: foo bar baz
+    After used script you will get: `foo` `bar` `baz`
+    """
     try:
         with open(file_path, "r", encoding="utf-8") as f:
             content = f.read()
@@ -26,3 +31,4 @@ if __name__ == '__main__':
 
     file_path = sys.argv[1]
     add_quotes_to_words(file_path)
+
