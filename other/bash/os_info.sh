@@ -52,29 +52,29 @@ then
 
     # Get external IP address
     ip_addresses=$(hostname -I 2>/dev/null)
-
+    
     if [ -z "$ip_addresses" ]; then
-        echo "Не удалось получить IP-адреса."
-    fi
-    
-    HAS_PUBLIC_IP=0
-    
-    for ip in $ip_addresses; do
-        # Проверяем, является ли IP публичным (не приватным)
-        if [[ $ip =~ ^10\. ]] || 
-           [[ $ip =~ ^172\.(1[6-9]|2[0-9]|3[0-1])\. ]] || 
-           [[ $ip =~ ^192\.168\. ]] || 
-           [[ $ip =~ ^127\. ]] || 
-           [[ $ip =~ ^(::1|[fF][cCdD]) ]]; then
-            continue
-        else
-            echo "Public IP found: $ip"
-            HAS_PUBLIC_IP=1
+        echo "Failed to obtain IP addresses."
+    else
+        HAS_PUBLIC_IP=0
+
+        for ip in $ip_addresses; do
+            # Проверяем, является ли IP публичным (не приватным)
+            if [[ $ip =~ ^10\. ]] || 
+               [[ $ip =~ ^172\.(1[6-9]|2[0-9]|3[0-1])\. ]] || 
+               [[ $ip =~ ^192\.168\. ]] || 
+               [[ $ip =~ ^127\. ]] || 
+               [[ $ip =~ ^(::1|[fF][cCdD]) ]]; then
+                continue
+            else
+                echo "Public IP found: $ip"
+                HAS_PUBLIC_IP=1
+            fi
+        done
+
+        if [ $HAS_PUBLIC_IP -eq 0 ]; then
+            echo "No public IP addresses found."
         fi
-    done
-    
-    if [ $HAS_PUBLIC_IP -eq 0 ]; then
-        echo "No public IP addresses found."
     fi
 
     echo "====================================="
