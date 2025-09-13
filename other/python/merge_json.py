@@ -1,5 +1,4 @@
 import json
-import glob
 from sys import argv
 import os
 
