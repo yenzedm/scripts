@@ -2,7 +2,7 @@
 
 function print_help() {
     local script_path="$1"
-    echo "Usage for creating backup: ${script_path} <source directory> <backup directory>"
+    echo "Usage for creating backup: ${script_path} <backup file name> <backup directory>"
     echo "Usage for getting version of manager: ${script_path} -v/--version"
     echo "Usage for recover backup: ${script_path} -r/--recover <backup file name> <recover directory>"
     echo "Note: For encrypted backups, use .sec files for recovery"
