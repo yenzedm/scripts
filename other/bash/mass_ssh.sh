@@ -28,7 +28,7 @@ while IFS= read -r ip; do
         ssh -o ConnectTimeout=5 -o BatchMode=yes "$ip" bash < "$1"
     else
         # think this is a command
-        ssh -o ConnectTimeout=5 -o BatchMode=yes "$ip" "$1"
+        ssh -n -o ConnectTimeout=5 -o BatchMode=yes "$ip" "$1"
     fi
 done < "$2"
 
