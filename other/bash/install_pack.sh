@@ -19,7 +19,7 @@ EOF
     echo "Delete remote repo..."
     rm -rf /etc/yum.repos.d/remote.repo
     echo "Close tunnel..."
-    kill -9 $(ps aux | grep -E 'ssh.*(-L|-R|-D| -f | -N )' | grep eremeev | awk '{print $2}')
+    kill -9 $(ps aux | grep -E 'ssh.*(-L|-R|-D| -f | -N )' | grep <user> | awk '{print $2}')
 else
     # command found
     echo "Command installed"
