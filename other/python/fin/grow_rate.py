@@ -1,3 +1,16 @@
+#Starting capital: 1000000
+#Value after investment period: 1100000
+#Years invested: 2
+#
+#Investment Growth Analysis
+#========================================
+#Initial amount: 1,000,000.00 ₽
+#Final amount: 1,100,000.00 ₽
+#Investment period: 2 years
+#----------------------------------------
+#Compound Annual Growth Rate (CAGR): 4.88%
+
+
 def calculate_cagr(start_value, end_value, years):
     """
     Calculates the Compound Annual Growth Rate (CAGR).

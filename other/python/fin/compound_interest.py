@@ -1,3 +1,22 @@
+#Compound Interest Savings Calculator
+#-----------------------------------
+#Enter monthly contribution amount: 10000
+#Enter annual interest rate (%): 10
+#Enter investment period (months): 5
+#
+#Savings Calculation Results
+#==================================================
+#Monthly contribution: 10,000.00
+#Annual interest rate: 10.00%
+#Investment period: 5 months (0.4 years)
+#--------------------------------------------------
+#Total contributions: 50,000.00
+#Interest earned: 1,263.98
+#Final balance: 51,263.98
+#==================================================
+#Actual annualized return on contributions: 6.07%
+
+
 def calculate_savings(monthly_deposit, annual_rate, months):
     """
     Calculates future value of investments with monthly contributions and compound interest.

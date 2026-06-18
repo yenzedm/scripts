@@ -1,3 +1,27 @@
+#Enter initial amount: 100000
+#Enter annual interest rate (%): 15
+#
+#Choose time unit:
+#    1 - Months
+#    2 - Years
+#    Enter your choice (1 or 2): 1
+#    Enter number of months: 12
+#    Compounding frequency per year (1=annually, 12=monthly): 12
+#
+#    ========================================
+#    Compound Interest Results        
+#    ========================================
+#    Initial amount:      100,000.00
+#    Annual rate:         15.0%
+#    Months invested:     12.0
+#    Years invested:      1.00
+#    Compounding freq:    12/year
+#    ----------------------------------------
+#    Future value:        116,075.45
+#    Interest earned:     16,075.45
+#    ========================================
+
+
 def calculate_compound_interest(principal, rate, months, compounding_freq=1):
     """
     Calculate future value with compound interest
