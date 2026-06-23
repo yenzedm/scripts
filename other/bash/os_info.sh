@@ -127,18 +127,23 @@ then
     # Get SWAP usage
     free | grep Swap | awk '{if ($2 == 0) print "Swap is disabled"; else printf "Swap Usage: %.1f%%\n", $3/$2 * 100.0}'
 
-    echo "====================================="
+    swap=$(free | grep Swap | awk '{print $2}')
 
-    # Top processes using SWAP
-    echo "top processes using SWAP:"
-    for file in /proc/[0-9]*/status; do
-        name=$(awk '/^Name:/ {print $2}' "$file")
-        pid=$(basename "$(dirname "$file")")
-        swap=$(awk '/^VmSwap:/ {print $2}' "$file")
-        [ -n "$swap" ] && echo "$pid $name $(echo "$swap" | awk '{print $1 / 1024 " Mb"}')"
-    done | sort -k 3 -n -r | head -n 20 
+    if (($swap == 0)); then
+        echo "====================================="
+    else
+        # Top processes using SWAP
+        echo "====================================="
+        echo "top processes using SWAP:"
+        for file in /proc/[0-9]*/status; do
+            name=$(awk '/^Name:/ {print $2}' "$file")
+            pid=$(basename "$(dirname "$file")")
+            swap=$(awk '/^VmSwap:/ {print $2}' "$file")
+            [ -n "$swap" ] && echo "$pid $name $(echo "$swap" | awk '{print $1 / 1024 " Mb"}')"
+        done | sort -k 3 -n -r | head -n 20 
+        echo "====================================="
+    fi
 
-    echo "====================================="
 
     #Get disks info
     echo "Disk Usages :"
