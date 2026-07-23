@@ -22,7 +22,7 @@ param(
     [string[]]$Apps,
 
     [Parameter(Position=1)]
-    [int]$Delay = 2
+    [int]$Delay = 5
 )
 
 # =====================================================
@@ -30,8 +30,16 @@ param(
 # Измените пути под себя:
 # =====================================================
 $defaultApps = @(
-    "C:\Users\dmitr\AppData\Roaming\Telegram Desktop\Telegram.exe",
-    "D:\Programs\Obsidian\Obsidian.exe"
+    "explorer",
+    "C:\Programs\Anki\Anki.exe",
+    "C:\Program Files\Google\Chrome\Application\chrome.exe",
+    "C:\Programs\Obsidian\Obsidian.exe",
+    "C:\Program Files\Oracle\VirtualBox\VirtualBox.exe",
+    "C:\Users\user\AppData\Local\SumatraPDF\SumatraPDF.exe",
+    "C:\Programs\Zed\Zed.exe",
+    "C:\Program Files\Yandex\YandexBrowser\Application\browser.exe",
+    "C:\Programs\VK Teams\vkteams.exe",
+    "C:\Programs\Tabby\Tabby.exe"
 )
 
 # Если параметр -Apps не передан или передан пустой массив,
@@ -72,3 +80,5 @@ foreach ($app in $Apps) {
 }
 
 Write-Host "All commands have been processed." -ForegroundColor Cyan
+Read-Host "Press Enter to close PowerShell."
+[Environment]::Exit(0)
