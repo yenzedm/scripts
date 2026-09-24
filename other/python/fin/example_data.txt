@@ -1,0 +1,15 @@
+# Example data file for average price calculation
+# Format: price quantity
+# Separator - space
+# Both number formats supported: with dot and with comma
+
+100.50 10
+200,25 5
+150 3
+75.5 20
+300 2
+0,111 41036
+99.99 15
+
+# Comments are ignored
+# Empty lines are also ignored
